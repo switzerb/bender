@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from 'react'
+import { withDatastore } from './datastore/withDatastore'
+import Dashboard from './components/Dashboard'
+import SignIn from './components/SignIn'
+import { UserContext } from './datastore/auth'
+import { Router } from '@reach/router'
 
-function App() {
+// TODO : Logging
+// TODO : front end framework
+
+const App = props => {
+  const user = useContext(UserContext);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    user ?
+      <Dashboard/>
+      :
+      <div className="app">
+      <Router>
+        <SignIn path="/"/>
+      </Router>
     </div>
-  );
+  )
 }
 
-export default App;
+export default withDatastore(App)
