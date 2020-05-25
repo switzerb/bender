@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Transactions = ({ transaction, onDelete }) => (
+const Transaction = ({ transaction, onDelete }) => (
   <div>
     <p>{transaction.name}</p>
     <button
@@ -13,4 +13,4 @@ const Transactions = ({ transaction, onDelete }) => (
   </div>
 )
 
-export default Transactions
+export default Transaction

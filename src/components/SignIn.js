@@ -1,7 +1,16 @@
 import React from 'react'
 import {signInWithGoogle} from '../datastore/auth'
+import { Button } from '@material-ui/core'
 
-const SignIn = () => (<button onClick={() => signInWithGoogle()}>Sign In</button>)
+const SignIn = () => {
+  return (
+    <Button
+      variant="contained"
+      onClick={() => signInWithGoogle()}>
+      Sign In
+    </Button>
+  )
+}
 
 export default SignIn;
 
