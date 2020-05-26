@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core'
 import { Add } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
-import AddTransaction from './AddTransaction'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,21 +33,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const Transactions = props => {
+const AddTransaction = ({open, firebase, onClose}) => {
   const classes = useStyles();
-  const { transactionsCollection } = props.firebase
+  const { transactionsCollection } = firebase
   const transactionContainer = useRef(null)
   const [transaction, setTransactionInput] = useState('')
   const [transactions, setTransactions] = useState([])
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   useEffect(() => {
     const unsubscribe = transactionsCollection
@@ -102,31 +92,37 @@ const Transactions = props => {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <Typography variant="h5">Things I Bought</Typography>
-        <section ref={transactionContainer}>
-          {renderTransactions()}
-        </section>
+      <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Add New Transaction</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            If your money changes, record it here. For adding money,
+            put in a positive number, like $5.00.
 
-        <form onSubmit={onTransactionAdd}>
-          <input
-            type="text"
+            When you buy stuff, put in a negative number, like -$5.00.
+          </DialogContentText>
+          <TextField
+            autoFocus
             placeholder="Add a new transaction"
+            margin="dense"
+            id="transaction"
+            label="Add Transaction"
             value={transaction}
             onChange={e => setTransactionInput(e.target.value)}
+            fullWidth
           />
-        </form>
-        <Fab
-          color="secondary"
-          aria-label="add"
-          className={classes.fab}
-          onClick={handleClickOpen}>
-          <Add />
-        </Fab>
-      </Paper>
-      <AddTransaction open={open} onClose={handleClose}/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={onTransactionAdd} color="secondary">
+            Add Transaction
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }
 
-export default withDatastore(Transactions)
+export default withDatastore(AddTransaction)
