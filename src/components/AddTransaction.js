@@ -36,58 +36,18 @@ const useStyles = makeStyles((theme) => ({
 const AddTransaction = ({open, firebase, onClose}) => {
   const classes = useStyles();
   const { transactionsCollection } = firebase
-  const transactionContainer = useRef(null)
   const [transaction, setTransactionInput] = useState('')
-  const [transactions, setTransactions] = useState([])
-
-  useEffect(() => {
-    const unsubscribe = transactionsCollection
-      .orderBy('timestamp', 'desc')
-      .onSnapshot(({ docs }) => {
-        const transactionsFromDB = []
-
-        docs.forEach(doc => {
-          const details = {
-            id: doc.id,
-            name: doc.data().transaction,
-            timestamp: doc.data().timestamp
-          }
-
-          transactionsFromDB.push(details)
-        })
-
-        setTransactions(transactionsFromDB)
-      })
-
-    return () => unsubscribe()
-  }, [])
-
-  const onTransactionDelete = event => {
-    const { id } = event.target
-    transactionsCollection.doc(id).delete()
-  }
 
   const onTransactionAdd = event => {
     event.preventDefault()
-
     if (!transaction.trim().length) return
 
     setTransactionInput('')
-    transactionContainer.current.scrollTop = 0 // scroll to top of container
 
     transactionsCollection.add({
       transaction,
       timestamp: new Date()
     })
-  }
-
-  const renderTransactions = () => {
-    if (!transactions.length)
-      return <h2>You don't have any transactions</h2>
-
-    return transactions.map(transaction => (
-      <Transaction key={transaction.id} transaction={transaction} onDelete={onTransactionDelete} />
-    ))
   }
 
   return (
@@ -110,6 +70,7 @@ const AddTransaction = ({open, firebase, onClose}) => {
             value={transaction}
             onChange={e => setTransactionInput(e.target.value)}
             fullWidth
+            variant="outlined"
           />
         </DialogContent>
         <DialogActions>

@@ -2,20 +2,15 @@ import React, { useState, useEffect, useRef } from 'react'
 import Transaction from './Transaction'
 import { withDatastore } from '../datastore/withDatastore'
 import {
-  Button,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Fab,
   Paper,
+    TextField,
   Typography
 } from '@material-ui/core'
 import { Add } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import AddTransaction from './AddTransaction'
+import TransactionsTable from "./TransactionsTable";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,8 +32,6 @@ const useStyles = makeStyles((theme) => ({
 const Transactions = props => {
   const classes = useStyles();
   const { transactionsCollection } = props.firebase
-  const transactionContainer = useRef(null)
-  const [transaction, setTransactionInput] = useState('')
   const [transactions, setTransactions] = useState([])
   const [open, setOpen] = React.useState(false);
 
@@ -72,50 +65,11 @@ const Transactions = props => {
     return () => unsubscribe()
   }, [])
 
-  const onTransactionDelete = event => {
-    const { id } = event.target
-    transactionsCollection.doc(id).delete()
-  }
-
-  const onTransactionAdd = event => {
-    event.preventDefault()
-
-    if (!transaction.trim().length) return
-
-    setTransactionInput('')
-    transactionContainer.current.scrollTop = 0 // scroll to top of container
-
-    transactionsCollection.add({
-      transaction,
-      timestamp: new Date()
-    })
-  }
-
-  const renderTransactions = () => {
-    if (!transactions.length)
-      return <h2>You don't have any transactions</h2>
-
-    return transactions.map(transaction => (
-      <Transaction key={transaction.id} transaction={transaction} onDelete={onTransactionDelete} />
-    ))
-  }
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <Typography variant="h5">Things I Bought</Typography>
-        <section ref={transactionContainer}>
-          {renderTransactions()}
-        </section>
-
-        <form onSubmit={onTransactionAdd}>
-          <input
-            type="text"
-            placeholder="Add a new transaction"
-            value={transaction}
-            onChange={e => setTransactionInput(e.target.value)}
-          />
-        </form>
+          <TransactionsTable transactions={transactions} />
         <Fab
           color="secondary"
           aria-label="add"
