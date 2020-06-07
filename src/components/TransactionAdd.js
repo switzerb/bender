@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import {withDatastore} from '../datastore/withDatastore'
 import {
     Button,
     TextField,
@@ -171,4 +170,4 @@ const TransactionAdd = ({open, firebase, onClose}) => {
     )
 }
 
-export default withDatastore(TransactionAdd)
+export default TransactionAdd

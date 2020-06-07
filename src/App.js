@@ -1,11 +1,10 @@
 import React, {useContext} from 'react'
-import {withDatastore} from './datastore/withDatastore'
 import Dashboard from './components/Dashboard'
 import Budgeter from './components/Budgeter'
 import Savings from "./components/Savings";
 import Spendings from './components/Spendings'
 import SignIn from './components/SignIn'
-import {UserContext} from './datastore/auth'
+import {UserContext} from './providers/UserProvider'
 import {Router} from '@reach/router'
 import {Container} from '@material-ui/core'
 import AppHeader from './components/AppHeader'
@@ -45,4 +44,4 @@ const App = props => {
   )
 }
 
-export default withDatastore(App)
+export default App

@@ -1,10 +1,8 @@
-import React, {useEffect, useReducer, useState} from 'react'
-import { withDatastore } from '../datastore/withDatastore'
+import React, {useContext, useEffect, useReducer} from 'react'
 import FutureMoney from './FutureMoney'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   Button,
-  ButtonGroup,
   Paper,
   Grid,
   Fab,
@@ -20,6 +18,7 @@ import {
   get_savings,
     get_spendings
 } from '../utils/calculations'
+import {DataContext} from '../providers/DataProvider'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,16 +43,11 @@ const reducer = (state, action) => {
 }
 
 
-const Billboard = ({firebase}) => {
+const Billboard = () => {
   const classes = useStyles()
-  const {
-    bucketsCollection,
-    savingsCollection,
-    spendingsCollection
-  } = firebase
-  const [amounts, setAmounts] = useState([])
   const [state, dispatch] = useReducer(reducer,{savings: [], spendings: []});
-
+  const db = useContext(DataContext)
+  const {savingsCollection, spendingsCollection, bucketsCollection} = db
 
   useEffect(() => {
     const unsubscribe = savingsCollection
@@ -147,4 +141,4 @@ const Billboard = ({firebase}) => {
     </Grid>  )
 }
 
-export default withDatastore(Billboard);
+export default Billboard;

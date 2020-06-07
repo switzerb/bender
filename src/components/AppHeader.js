@@ -7,8 +7,7 @@ import {ArrowDropDown} from '@material-ui/icons';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button'
-import {UserContext} from '../datastore/auth'
-import {logout} from '../datastore/auth'
+import {UserContext} from '../providers/UserProvider'
 import Navigation from './Navigation'
 
 const useStyles = makeStyles((theme) => ({
@@ -29,16 +28,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AppHeader() {
   const classes = useStyles();
-  const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const user = useContext(UserContext);
-
-// console.log(user.displayName);
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
+  const {user, logout} = useContext(UserContext);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -81,7 +73,7 @@ export default function AppHeader() {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={() => logout()}>Logout</MenuItem>
+                <MenuItem onClick={logout}>Logout</MenuItem>
               </Menu>
             </div>
           )}

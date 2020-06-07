@@ -7,7 +7,6 @@ import {
 import {
     Delete
 } from "@material-ui/icons";
-import {withDatastore} from "../datastore/withDatastore"
 import NumberFormat from 'react-number-format'
 import {makeStyles} from "@material-ui/core/styles"
 
@@ -46,4 +45,4 @@ const Transaction = ({ transaction, ...props }) => {
     )
 }
 
-export default withDatastore(Transaction)
+export default Transaction

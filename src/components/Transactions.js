@@ -1,9 +1,7 @@
 import React, {useState, useEffect, useReducer} from 'react'
-import {withDatastore} from '../datastore/withDatastore'
 import {
     Fab,
     Paper,
-    TextField,
     Typography
 } from '@material-ui/core'
 import {Add} from '@material-ui/icons'
@@ -98,4 +96,4 @@ const Transactions = props => {
     )
 }
 
-export default withDatastore(Transactions)
+export default Transactions

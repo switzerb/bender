@@ -2,8 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
-import {DatastoreContext, Firebase} from './datastore'
-import UserProvider from './datastore/auth'
+import {DataProvider} from './providers/DataProvider'
+import {UserProvider} from './providers/UserProvider'
 import {ThemeProvider} from '@material-ui/core/styles'
 import * as serviceWorker from './serviceWorker'
 import theme from './theme'
@@ -17,13 +17,13 @@ let history = createHistory(window)
 ReactDOM.render(
     <React.StrictMode>
         <UserProvider>
-            <DatastoreContext.Provider value={new Firebase()}>
+            <DataProvider>
                 <ThemeProvider theme={theme}>
                     <LocationProvider history={history}>
                         <App/>
                     </LocationProvider>
                 </ThemeProvider>
-            </DatastoreContext.Provider>,
+            </DataProvider>
         </UserProvider>
     </React.StrictMode>,
     document.getElementById('root')

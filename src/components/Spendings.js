@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useReducer} from 'react'
-import {withDatastore} from '../datastore/withDatastore'
 import {
     Fab,
     Paper,
@@ -99,4 +98,4 @@ const Spendings = props => {
     )
 }
 
-export default withDatastore(Spendings)
+export default Spendings

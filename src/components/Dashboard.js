@@ -1,5 +1,4 @@
 import React from 'react'
-import { withDatastore } from '../datastore/withDatastore'
 import Billboard from './Billboard'
 
 const Dashboard = props => {
@@ -10,4 +9,4 @@ const Dashboard = props => {
   )
 }
 
-export default withDatastore(Dashboard)
+export default Dashboard

@@ -1,5 +1,5 @@
 import React from 'react'
-import {signInWithGoogle} from '../datastore/auth'
+import {signInWithGoogle} from '../providers/auth'
 import {
     Avatar,
     Box,
