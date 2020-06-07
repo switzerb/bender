@@ -6,6 +6,10 @@ import 'firebase/auth'
 
 export const auth = FirebaseApp.auth;
 
+// in order to initialize, we need to create a default bucket
+// set up basic collections
+// send profile information to the profile page
+
 class Firebase {
     constructor() {
         if (!FirebaseApp.apps.length) {

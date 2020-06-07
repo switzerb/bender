@@ -21,7 +21,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 // TODO: Validation on amount
 // TODO: helpers on forms
-// TODO: add buckets for spending
 // TODO: toggle for earn or spend
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +60,7 @@ function NumberFormatCustom(props) {
 
 const TransactionAdd = ({open, firebase, onClose}) => {
     const classes = useStyles();
-    const {transactionsCollection, bucketsCollection} = firebase
+    const {spendingsCollection, bucketsCollection} = firebase
     const [description, setDescription] = useState('')
     const [type, setType] = useState("in")
     const [buckets, setBuckets] = React.useState([])
@@ -94,11 +93,11 @@ const TransactionAdd = ({open, firebase, onClose}) => {
         event.preventDefault()
         if (!description.trim().length) return
 
-        transactionsCollection.add({
+        spendingsCollection.add({
             description,
             amount,
             timestamp: new Date(),
-            bucketRef: bucketsCollection.doc('iVkMAT9ZJJOkf9OrhIfw'), //default "whatever" bucket
+            bucketRef: bucketsCollection.doc('NuFf90h4RPiqSlEHp0RK'), //we need to automatically create a bucket
         })
     }
 

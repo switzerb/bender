@@ -1,7 +1,10 @@
 import React, { createContext } from 'react'
 import { auth } from '.'
 
-export const UserContext = createContext({ user: null });
+export const UserContext = createContext({
+  user: null,
+  logout: () => logout()
+});
 
 export function signInWithGoogle() {
   const provider = new auth.GoogleAuthProvider();
