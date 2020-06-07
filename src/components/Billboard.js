@@ -1,4 +1,6 @@
-import React from 'react'
+import React, {useEffect, useReducer, useState} from 'react'
+import { withDatastore } from '../datastore/withDatastore'
+import FutureMoney from './FutureMoney'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   Button,
@@ -13,6 +15,11 @@ import {
   Typography
 } from '@material-ui/core';
 import Add from '@material-ui/icons/Add';
+import {
+  get_total,
+  get_savings,
+    get_spendings
+} from '../utils/calculations'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,25 +32,96 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Billboard = () => {
-  const classes = useStyles();
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'getSavings':
+      return {...state, savings: action.payload}
+    case 'getSpendings':
+      return {...state, spendings: action.payload}
+    default:
+      throw new Error();
+  }
+}
+
+
+const Billboard = ({firebase}) => {
+  const classes = useStyles()
+  const {
+    bucketsCollection,
+    savingsCollection,
+    spendingsCollection
+  } = firebase
+  const [amounts, setAmounts] = useState([])
+  const [state, dispatch] = useReducer(reducer,{savings: [], spendings: []});
+
+
+  useEffect(() => {
+    const unsubscribe = savingsCollection
+        .onSnapshot(({ docs }) => {
+          const transactions = docs.map( doc => {
+            return doc.data()
+          })
+          dispatch({type: 'getSavings', payload: transactions})
+        })
+
+    return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = spendingsCollection
+        .onSnapshot(({ docs }) => {
+          const transactions = docs.map( doc => {
+            return doc.data()
+          })
+          dispatch({type: 'getSpendings', payload: transactions})
+        })
+
+    return () => unsubscribe()
+  }, [])
+
+  const recordAllowance = () => {
+    // TODO: Make sure that they can only hit the button once a week!
+    savingsCollection.add({
+      description: "Weekly Allowance",
+      inflow: 5.00,
+      outflow: 0,
+      timestamp: new Date()
+    })
+
+    spendingsCollection.add({
+      description: "Weekly Allowance",
+      inflow: 5.00,
+      outflow: 0,
+      timestamp: new Date(),
+      bucketRef: bucketsCollection.doc('iVkMAT9ZJJOkf9OrhIfw'), //default "whatever" bucket
+    })
+  }
+
   return(
     <Grid container spacing={2}>
       <Grid item xs={6}>
         <Paper className={classes.paper}>
           <Typography variant="h6">Total Money On {new Date(Date.now()).toLocaleString()}</Typography>
-          <Typography variant="h1">$654</Typography>
+          <Typography variant="h1">${get_total(state.savings, state.spendings)}</Typography>
           <List>
             <ListItem>
               <ListItemText primary="Savings Total - 50%" />
               <ListItemSecondaryAction>
-                <Typography variant="h4">$392</Typography>
+                <Typography variant="h4">${get_savings(state.savings)}</Typography>
               </ListItemSecondaryAction>
             </ListItem>
             <ListItem>
-              <ListItemText primary="Fortnite Total - 10%" />
+              <ListItemText primary="Spendable Total" />
               <ListItemSecondaryAction>
-                <Typography variant="h4">$85</Typography>
+                <Typography variant="h4">${get_spendings(state.spendings)}</Typography>
+              </ListItemSecondaryAction>
+            </ListItem>
+
+            <ListItem>
+              <ListItemText primary="Fortnite Left This Month" />
+              <ListItemSecondaryAction>
+                {/* every month you put $10 into your fortnight budget */}
+                <Typography variant="h4">$0</Typography>
               </ListItemSecondaryAction>
             </ListItem>
           </List>
@@ -56,35 +134,17 @@ const Billboard = () => {
       </Grid>
       <Grid item xs={6}>
         <Paper className={classes.paper}>
-          <Typography variant="h6">Future Money</Typography>
-          <p>You are earning a 5% interest rate.</p>
-          <p>You earn $2 every week.</p>
-          <Typography variant="h6">How much will I have in...?</Typography>
-          <ButtonGroup size="small" color="secondary" aria-label="outlined primary button group">
-            <Button variant="contained">One week</Button>
-            <Button>One month</Button>
-            <Button>Three months</Button>
-            <Button>One year</Button>
-          </ButtonGroup>
-          <Typography variant="h3">$664</Typography>
-          <List>
-            <ListItem>
-              <ListItemText primary="Savings Total - 50%" />
-              <ListItemSecondaryAction>
-                <Typography variant="h4">$392</Typography>
-              </ListItemSecondaryAction>
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="Fortnite Total - 10%" />
-              <ListItemSecondaryAction>
-                <Typography variant="h4">$85</Typography>
-              </ListItemSecondaryAction>
-            </ListItem>
-          </List>
-
+          <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={recordAllowance}>
+            Record Weekly Allowance
+          </Button>
+          <FutureMoney savings={get_savings(state.savings)} spending={get_spendings(state.spendings)}/>
         </Paper>
       </Grid>
     </Grid>  )
 }
 
-export default Billboard;
+export default withDatastore(Billboard);

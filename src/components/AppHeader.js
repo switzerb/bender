@@ -87,7 +87,7 @@ export default function AppHeader() {
           )}
         </Toolbar>
       </AppBar>
-      <Navigation/>
+      { user && <Navigation/> }
     </div>
   );
 }

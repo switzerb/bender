@@ -5,7 +5,7 @@ import Billboard from './Billboard'
 const Dashboard = props => {
   return (
     <div className="app">
-      <Billboard/>
+      <Billboard />
     </div>
   )
 }

@@ -1496,6 +1496,17 @@
   dependencies:
     "@babel/runtime" "^7.4.4"
 
+"@material-ui/lab@^4.0.0-alpha.55":
+  version "4.0.0-alpha.55"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.55.tgz#82a850dc59654e04ee3a31be1b34eb3bf64d5585"
+  integrity sha512-mPHiS52Z1AT6NlWNp07xxTkoKGU3DZhoGdVtLKGy2+uMH5t4/UPtiZLRab7hR3hvuHvguxgV4tkBC9ww3xqUzA==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@material-ui/utils" "^4.9.6"
+    clsx "^1.0.4"
+    prop-types "^15.7.2"
+    react-is "^16.8.0"
+
 "@material-ui/styles@^4.10.0":
   version "4.10.0"
   resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.10.0.tgz#2406dc23aa358217aa8cc772e6237bd7f0544071"
@@ -9146,6 +9157,13 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-number-format@^4.4.1:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-4.4.1.tgz#d5614dd25edfc21ed48b97356213440081437a94"
+  integrity sha512-ZGFMXZ0U7DcmQ3bSZY3FULOA1mfqreT9NIMYZNoa/ouiSgiTQiYA95Uj2KN8ge6BRr+ghA5vraozqWqsHZQw3Q==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-scripts@3.4.1:
   version "3.4.1"

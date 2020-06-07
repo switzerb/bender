@@ -29,18 +29,18 @@ const useStyles = makeStyles((theme) => ({
 
 const reducer = (state, action) => {
     switch (action.type) {
-        case 'getTransactions':
-            return {...state, transactions: action.payload}
+        case 'getSpendings':
+            return {...state, spendings: action.payload}
         default:
             throw new Error();
     }
 }
 
-const Transactions = props => {
+const Spendings = props => {
     const classes = useStyles();
-    const {transactionsCollection} = props.firebase
+    const {spendingsCollection} = props.firebase
     const [open, setOpen] = React.useState(false);
-    const [state, dispatch] = useReducer(reducer,{transactions: []});
+    const [state, dispatch] = useReducer(reducer,{spendings: []});
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -51,27 +51,28 @@ const Transactions = props => {
     };
 
     useEffect(() => {
-        const unsubscribe = transactionsCollection
+        const unsubscribe = spendingsCollection
             .orderBy('timestamp', 'desc')
             .onSnapshot(({docs}) => {
                 let temp = [];
                 docs.map(doc => {
-                    const {description, amount, timestamp, bucketRef} = doc.data()
+                    const {description, inflow, outflow, timestamp, bucketRef} = doc.data()
                     let detail = {
                         id: doc.id,
                         description,
-                        amount,
+                        inflow,
+                        outflow,
                         date: timestamp.toDate(),
                     }
                     if(bucketRef) {
                         bucketRef.get().then(bucket => {
                             detail.bucket = bucket.data().name
                             temp.push(detail)
-                            dispatch({type: 'getTransactions', payload: temp})
+                            dispatch({type: 'getSpendings', payload: temp})
                         })
                     } else {
                         temp.push(detail)
-                        dispatch({type: 'getTransactions', payload: temp})
+                        dispatch({type: 'getSpendings', payload: temp})
                     }
                 })
             })
@@ -84,7 +85,7 @@ const Transactions = props => {
                 <Typography variant="h4">Transactions</Typography>
                 <Typography variant="h6">This is where you can write down what you earned and what you
                     spent.</Typography>
-                <TransactionsTable transactions={state.transactions}/>
+                <TransactionsTable transactions={state.spendings}/>
                 <Fab
                     color="secondary"
                     aria-label="add"
@@ -98,4 +99,4 @@ const Transactions = props => {
     )
 }
 
-export default withDatastore(Transactions)
+export default withDatastore(Spendings)
