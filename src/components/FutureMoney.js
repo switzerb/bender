@@ -6,11 +6,13 @@ import {
     Typography
 } from '@material-ui/core'
 
-const useStyles = makeStyles({
-    root: {
-        width: 300,
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        margin: theme.spacing(2),
+        padding: theme.spacing(2),
+        textAlign: 'center'
     },
-});
+}));
 
 const FutureMoney = ({savings, spending}) => {
     const classes = useStyles();
@@ -21,9 +23,9 @@ const FutureMoney = ({savings, spending}) => {
     }
 
     return (
-        <>
+        <Paper className={classes.paper}>
         <Typography variant="h4">Future Money</Typography>
-            <p>You earn $10 every week.</p>
+            <p>You earn $10 every week, $5 to save, $5 to spend.</p>
             <Typography variant="h6">How much will I have in...?</Typography>
             <Slider
                 onChange={handleChange}
@@ -37,7 +39,7 @@ const FutureMoney = ({savings, spending}) => {
             <Typography variant="h4">In Savings: {savings + (weeks * 5)}</Typography>
             <Typography variant="h4">In Spending: {spending + (weeks * 5)}</Typography>
             <Typography variant="h4">Total: {spending + savings + (weeks * 10)}</Typography>
-            </>
+        </Paper>
     )
 }
 

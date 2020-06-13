@@ -1,23 +1,23 @@
 import React, {useState, useEffect, createContext} from "react";
-import {
-    auth,
-    logout
-} from "./auth";
+import {firebase} from './firebase'
 
+import { logout } from "./auth";
 
-const UserContext = React.createContext();
+const UserContext = createContext();
 const { Provider } = UserContext;
 
 const UserProvider = props => {
-    const [user, setUser] = useState(null);
+    const [current_user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        auth().onAuthStateChanged(userAuth => {
-            setUser({ user: userAuth});
+        firebase.auth().onAuthStateChanged(userAuth => {
+            setUser(userAuth);
+            setLoading(false)
         });
     }, []);
 
-    return <Provider value={{ user, logout: () => logout() }}>{props.children}</Provider>;
+    return <Provider value={{ current_user, loading, logout: () => logout() }}>{props.children}</Provider>;
 };
 
 export { UserProvider, UserContext };

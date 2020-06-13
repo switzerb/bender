@@ -10,8 +10,10 @@ const config = {
     appId: "1:445494690576:web:b0c65cca6520099b4f9b95"
 };
 firebase.initializeApp(config);
-firebase.firestore()
-    .enablePersistence({synchronizeTabs: true})
-    .catch(err => console.log(err))
 
-export default firebase;
+const db = firebase.firestore()
+
+db.enablePersistence({synchronizeTabs: true})
+    .catch(err => console.error(err))
+
+export {firebase, db };

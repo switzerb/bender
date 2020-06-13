@@ -46,60 +46,44 @@ const reducer = (state, action) => {
 const Billboard = () => {
   const classes = useStyles()
   const [state, dispatch] = useReducer(reducer,{savings: [], spendings: []});
-  const db = useContext(DataContext)
-  const {savingsCollection, spendingsCollection, bucketsCollection} = db
+  const {savingsCollection, spendingsCollection, bucketsCollection} = useContext(DataContext)
 
   useEffect(() => {
-    const unsubscribe = savingsCollection
-        .onSnapshot(({ docs }) => {
-          const transactions = docs.map( doc => {
-            return doc.data()
+    if(savingsCollection) {
+      const unsubscribe = savingsCollection
+          .onSnapshot(({ docs }) => {
+            const transactions = docs.map( doc => {
+              return doc.data()
+            })
+            dispatch({type: 'getSavings', payload: transactions})
           })
-          dispatch({type: 'getSavings', payload: transactions})
-        })
 
-    return () => unsubscribe()
+      return () => unsubscribe()
+    }
   }, [])
 
   useEffect(() => {
-    const unsubscribe = spendingsCollection
-        .onSnapshot(({ docs }) => {
-          const transactions = docs.map( doc => {
-            return doc.data()
+    if(spendingsCollection) {
+      const unsubscribe = spendingsCollection
+          .onSnapshot(({ docs }) => {
+            const transactions = docs.map( doc => {
+              return doc.data()
+            })
+            dispatch({type: 'getSpendings', payload: transactions})
           })
-          dispatch({type: 'getSpendings', payload: transactions})
-        })
 
-    return () => unsubscribe()
+      return () => unsubscribe()
+    }
   }, [])
-
-  const recordAllowance = () => {
-    // TODO: Make sure that they can only hit the button once a week!
-    savingsCollection.add({
-      description: "Weekly Allowance",
-      inflow: 5.00,
-      outflow: 0,
-      timestamp: new Date()
-    })
-
-    spendingsCollection.add({
-      description: "Weekly Allowance",
-      inflow: 5.00,
-      outflow: 0,
-      timestamp: new Date(),
-      bucketRef: bucketsCollection.doc('iVkMAT9ZJJOkf9OrhIfw'), //default "whatever" bucket
-    })
-  }
 
   return(
-    <Grid container spacing={2}>
-      <Grid item xs={6}>
         <Paper className={classes.paper}>
-          <Typography variant="h6">Total Money On {new Date(Date.now()).toLocaleString()}</Typography>
+          <Typography variant="h4">Total Money</Typography>
+          <Typography variant="overline">On {new Date(Date.now()).toLocaleString()}</Typography>
           <Typography variant="h1">${get_total(state.savings, state.spendings)}</Typography>
           <List>
             <ListItem>
-              <ListItemText primary="Savings Total - 50%" />
+              <ListItemText primary="Savings Total" />
               <ListItemSecondaryAction>
                 <Typography variant="h4">${get_savings(state.savings)}</Typography>
               </ListItemSecondaryAction>
@@ -110,35 +94,9 @@ const Billboard = () => {
                 <Typography variant="h4">${get_spendings(state.spendings)}</Typography>
               </ListItemSecondaryAction>
             </ListItem>
-
-            <ListItem>
-              <ListItemText primary="Fortnite Left This Month" />
-              <ListItemSecondaryAction>
-                {/* every month you put $10 into your fortnight budget */}
-                <Typography variant="h4">$0</Typography>
-              </ListItemSecondaryAction>
-            </ListItem>
           </List>
-          <Fab color="secondary" aria-label="add" variant="extended">
-            <Add/>
-            New Bucket
-          </Fab>
-
         </Paper>
-      </Grid>
-      <Grid item xs={6}>
-        <Paper className={classes.paper}>
-          <Button
-              variant="contained"
-              color="secondary"
-              size="large"
-              onClick={recordAllowance}>
-            Record Weekly Allowance
-          </Button>
-          <FutureMoney savings={get_savings(state.savings)} spending={get_spendings(state.spendings)}/>
-        </Paper>
-      </Grid>
-    </Grid>  )
+  )
 }
 
 export default Billboard;

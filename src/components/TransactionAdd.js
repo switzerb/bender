@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {
     Button,
     TextField,
@@ -17,6 +17,7 @@ import {
 } from '@material-ui/lab'
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import {DataContext} from "../providers/DataProvider";
 
 // TODO: Validation on amount
 // TODO: helpers on forms
@@ -57,28 +58,30 @@ function NumberFormatCustom(props) {
     );
 }
 
-const TransactionAdd = ({open, firebase, onClose}) => {
+const TransactionAdd = ({open, onClose}) => {
     const classes = useStyles();
-    const {spendingsCollection, bucketsCollection} = firebase
+    const {spendingsCollection, bucketsCollection} = useContext(DataContext)
     const [description, setDescription] = useState('')
     const [type, setType] = useState("in")
     const [buckets, setBuckets] = React.useState([])
-    const [bucket, setBucket] = React.useState('')
+    const [bucket, setBucket] = React.useState(null)
     const [amount, setAmount] = useState('')
 
     useEffect(() => {
-        const unsubscribe = bucketsCollection
-            .onSnapshot(({docs}) => {
-                const fromDB = docs.map(doc => {
-                    const {name} = doc.data()
-                    return {
-                        id: doc.id,
-                        name,
-                    }
+        if(bucketsCollection) {
+            const unsubscribe = bucketsCollection
+                .onSnapshot(({docs}) => {
+                    const fromDB = docs.map(doc => {
+                        const {name} = doc.data()
+                        return {
+                            id: doc.id,
+                            name,
+                        }
+                    })
+                    setBuckets(fromDB)
                 })
-                setBuckets(fromDB)
-            })
-        return () => unsubscribe()
+            return () => unsubscribe()
+        }
     }, [])
 
     const handleChangeType = (event, newType) => {
@@ -96,7 +99,7 @@ const TransactionAdd = ({open, firebase, onClose}) => {
             description,
             amount,
             timestamp: new Date(),
-            bucketRef: bucketsCollection.doc('NuFf90h4RPiqSlEHp0RK'), //we need to automatically create a bucket
+            bucketRef: bucket, //we need to automatically create a bucket
         })
     }
 

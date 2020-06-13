@@ -30,7 +30,7 @@ export default function AppHeader() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const {user, logout} = useContext(UserContext);
+  const {current_user, logout} = useContext(UserContext);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -48,14 +48,14 @@ export default function AppHeader() {
             BENDER
             <Typography variant="overline" className={classes.subtitle}>Personal finance for fun and profit!</Typography>
           </Typography>
-          {user && (
+          {current_user && (
             <div>
               <Button
                 color="inherit"
                 onClick={handleMenu}
                 endIcon={<ArrowDropDown />}
               >
-                Welcome, {user.displayName}
+                Welcome, {current_user.displayName}
               </Button>
               <Menu
                 id="menu-appbar"
@@ -79,7 +79,7 @@ export default function AppHeader() {
           )}
         </Toolbar>
       </AppBar>
-      { user && <Navigation/> }
+      { current_user && <Navigation/> }
     </div>
   );
 }

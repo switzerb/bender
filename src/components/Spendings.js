@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer} from 'react'
+import React, {useState, useEffect, useReducer, useContext} from 'react'
 import {
     Fab,
     Paper,
@@ -9,6 +9,7 @@ import {Add} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/core/styles'
 import AddTransaction from './TransactionAdd'
 import TransactionsTable from "./TransactionsTable";
+import {DataContext} from "../providers/DataProvider";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,9 +38,9 @@ const reducer = (state, action) => {
 
 const Spendings = props => {
     const classes = useStyles();
-    const {spendingsCollection} = props.firebase
+    const {spendingsCollection} = useContext(DataContext)
     const [open, setOpen] = React.useState(false);
-    const [state, dispatch] = useReducer(reducer,{spendings: []});
+    const [state, dispatch] = useReducer(reducer, {spendings: []});
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -50,32 +51,34 @@ const Spendings = props => {
     };
 
     useEffect(() => {
-        const unsubscribe = spendingsCollection
-            .orderBy('timestamp', 'desc')
-            .onSnapshot(({docs}) => {
-                let temp = [];
-                docs.map(doc => {
-                    const {description, inflow, outflow, timestamp, bucketRef} = doc.data()
-                    let detail = {
-                        id: doc.id,
-                        description,
-                        inflow,
-                        outflow,
-                        date: timestamp.toDate(),
-                    }
-                    if(bucketRef) {
-                        bucketRef.get().then(bucket => {
-                            detail.bucket = bucket.data().name
+        if (spendingsCollection) {
+            const unsubscribe = spendingsCollection
+                .orderBy('timestamp', 'desc')
+                .onSnapshot(({docs}) => {
+                    let temp = [];
+                    docs.map(doc => {
+                        const {description, inflow, outflow, timestamp, bucketRef} = doc.data()
+                        let detail = {
+                            id: doc.id,
+                            description,
+                            inflow,
+                            outflow,
+                            date: timestamp.toDate(),
+                        }
+                        if (bucketRef) {
+                            bucketRef.get().then(bucket => {
+                                detail.bucket = bucket.data().name
+                                temp.push(detail)
+                                dispatch({type: 'getSpendings', payload: temp})
+                            })
+                        } else {
                             temp.push(detail)
                             dispatch({type: 'getSpendings', payload: temp})
-                        })
-                    } else {
-                        temp.push(detail)
-                        dispatch({type: 'getSpendings', payload: temp})
-                    }
+                        }
+                    })
                 })
-            })
-        return () => unsubscribe()
+            return () => unsubscribe()
+        }
     }, [])
 
     return (

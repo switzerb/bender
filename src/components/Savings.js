@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer} from 'react'
+import React, {useState, useEffect, useReducer, useContext} from 'react'
 import {
     Fab,
     Paper,
@@ -9,6 +9,7 @@ import {Add} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/core/styles'
 import AddTransaction from './TransactionAdd'
 import TransactionsTable from "./TransactionsTable";
+import {DataContext} from "../providers/DataProvider";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,28 +38,30 @@ const reducer = (state, action) => {
 
 const Savings = props => {
     const classes = useStyles();
-    const {savingsCollection} = props.firebase
+    const {savingsCollection} = useContext(DataContext)
     const [state, dispatch] = useReducer(reducer,{savings: []});
 
     useEffect(() => {
-        const unsubscribe = savingsCollection
-            .orderBy('timestamp', 'desc')
-            .onSnapshot(({docs}) => {
-                let temp = [];
-                docs.map(doc => {
-                    const {description, inflow, outflow, timestamp} = doc.data()
-                    let detail = {
-                        id: doc.id,
-                        description,
-                        inflow,
-                        outflow,
-                        date: timestamp.toDate(),
-                    }
-                    temp.push(detail)
-                    dispatch({type: 'getSavings', payload: temp})
+        if(savingsCollection) {
+            const unsubscribe = savingsCollection
+                .orderBy('timestamp', 'desc')
+                .onSnapshot(({docs}) => {
+                    let temp = [];
+                    docs.map(doc => {
+                        const {description, inflow, outflow, timestamp} = doc.data()
+                        let detail = {
+                            id: doc.id,
+                            description,
+                            inflow,
+                            outflow,
+                            date: timestamp.toDate(),
+                        }
+                        temp.push(detail)
+                        dispatch({type: 'getSavings', payload: temp})
+                    })
                 })
-            })
-        return () => unsubscribe()
+            return () => unsubscribe()
+        }
     }, [])
 
     return (

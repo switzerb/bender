@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import {
     IconButton,
     TableRow,
@@ -9,6 +9,7 @@ import {
 } from "@material-ui/icons";
 import NumberFormat from 'react-number-format'
 import {makeStyles} from "@material-ui/core/styles"
+import {DataContext} from "../providers/DataProvider";
 
 const useStyles = makeStyles((theme) => ({
     root: {},
@@ -20,10 +21,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Transaction = ({ transaction, ...props }) => {
     const classes = useStyles();
-    const { transactionsCollection } = props.firebase
+    const {spendingsCollection} = useContext(DataContext)
 
     const onTransactionDelete = id => {
-        transactionsCollection
+        spendingsCollection
             .doc(id)
             .delete()
             .catch((e) =>{
