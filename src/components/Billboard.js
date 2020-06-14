@@ -1,18 +1,13 @@
 import React, {useContext, useEffect, useReducer} from 'react'
-import FutureMoney from './FutureMoney'
 import { makeStyles } from '@material-ui/core/styles'
 import {
-  Button,
   Paper,
-  Grid,
-  Fab,
   List,
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
   Typography
-} from '@material-ui/core';
-import Add from '@material-ui/icons/Add';
+} from '@material-ui/core'
 import {
   get_total,
   get_savings,
@@ -46,7 +41,7 @@ const reducer = (state, action) => {
 const Billboard = () => {
   const classes = useStyles()
   const [state, dispatch] = useReducer(reducer,{savings: [], spendings: []});
-  const {savingsCollection, spendingsCollection, bucketsCollection} = useContext(DataContext)
+  const {savingsCollection, spendingsCollection} = useContext(DataContext)
 
   useEffect(() => {
     if(savingsCollection) {
@@ -60,7 +55,7 @@ const Billboard = () => {
 
       return () => unsubscribe()
     }
-  }, [])
+  }, [savingsCollection])
 
   useEffect(() => {
     if(spendingsCollection) {
@@ -74,7 +69,7 @@ const Billboard = () => {
 
       return () => unsubscribe()
     }
-  }, [])
+  }, [spendingsCollection])
 
   return(
         <Paper className={classes.paper}>

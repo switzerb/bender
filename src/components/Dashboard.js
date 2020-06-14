@@ -2,26 +2,16 @@ import React, {useContext, useEffect, useReducer} from 'react'
 import FutureMoney from './FutureMoney'
 import { makeStyles } from '@material-ui/core/styles'
 import {
-    Button,
-    Paper,
     Grid,
-    Fab,
-    List,
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction,
-    Typography
-} from '@material-ui/core';
-import Add from '@material-ui/icons/Add';
+} from '@material-ui/core'
 import {
-    get_total,
     get_savings,
     get_spendings
 } from '../utils/calculations'
 import {DataContext} from '../providers/DataProvider'
-import RecordAllowance from "./RecordAllowance";
-import Billboard from "./Billboard";
-import Buckets from "./Buckets";
+import RecordAllowance from './RecordAllowance'
+import Billboard from './Billboard'
+import Buckets from './Buckets'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,7 +39,7 @@ const reducer = (state, action) => {
 const Dashboard = () => {
     const classes = useStyles()
     const [state, dispatch] = useReducer(reducer,{savings: [], spendings: []});
-    const {savingsCollection, spendingsCollection, bucketsCollection} = useContext(DataContext)
+    const {savingsCollection, spendingsCollection} = useContext(DataContext)
 
     useEffect(() => {
         if(savingsCollection) {
@@ -63,7 +53,7 @@ const Dashboard = () => {
 
             return () => unsubscribe()
         }
-    }, [])
+    }, [savingsCollection])
 
     useEffect(() => {
         if(spendingsCollection) {
@@ -77,10 +67,10 @@ const Dashboard = () => {
 
             return () => unsubscribe()
         }
-    }, [])
+    }, [spendingsCollection])
 
     return(
-        <Grid container spacing={2}>
+        <Grid container spacing={2} className={classes.root}>
             <Grid item xs={6}>
                 <Billboard/>
                 <Buckets/>

@@ -1,13 +1,9 @@
-import React, {useState, useEffect, useReducer, useContext} from 'react'
+import React, {useEffect, useReducer, useContext} from 'react'
 import {
-    Fab,
     Paper,
-    TextField,
     Typography
 } from '@material-ui/core'
-import {Add} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/core/styles'
-import AddTransaction from './TransactionAdd'
 import TransactionsTable from "./TransactionsTable";
 import {DataContext} from "../providers/DataProvider";
 
@@ -47,7 +43,7 @@ const Savings = props => {
                 .orderBy('timestamp', 'desc')
                 .onSnapshot(({docs}) => {
                     let temp = [];
-                    docs.map(doc => {
+                    docs.forEach(doc => {
                         const {description, inflow, outflow, timestamp} = doc.data()
                         let detail = {
                             id: doc.id,
@@ -62,7 +58,7 @@ const Savings = props => {
                 })
             return () => unsubscribe()
         }
-    }, [])
+    }, [savingsCollection])
 
     return (
         <div className={classes.root}>

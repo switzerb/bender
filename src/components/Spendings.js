@@ -1,8 +1,7 @@
-import React, {useState, useEffect, useReducer, useContext} from 'react'
+import React, {useEffect, useReducer, useContext} from 'react'
 import {
     Fab,
     Paper,
-    TextField,
     Typography
 } from '@material-ui/core'
 import {Add} from '@material-ui/icons'
@@ -56,7 +55,7 @@ const Spendings = props => {
                 .orderBy('timestamp', 'desc')
                 .onSnapshot(({docs}) => {
                     let temp = [];
-                    docs.map(doc => {
+                    docs.forEach(doc => {
                         const {description, inflow, outflow, timestamp, bucketRef} = doc.data()
                         let detail = {
                             id: doc.id,
@@ -66,11 +65,12 @@ const Spendings = props => {
                             date: timestamp.toDate(),
                         }
                         if (bucketRef) {
-                            bucketRef.get().then(bucket => {
+                            bucketRef.get()
+                                .then(bucket => {
                                 detail.bucket = bucket.data().name
                                 temp.push(detail)
                                 dispatch({type: 'getSpendings', payload: temp})
-                            })
+                            }).catch(err => console.error(err))
                         } else {
                             temp.push(detail)
                             dispatch({type: 'getSpendings', payload: temp})
@@ -79,14 +79,12 @@ const Spendings = props => {
                 })
             return () => unsubscribe()
         }
-    }, [])
+    }, [spendingsCollection])
 
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
                 <Typography variant="h4">Transactions</Typography>
-                <Typography variant="h6">This is where you can write down what you earned and what you
-                    spent.</Typography>
                 <TransactionsTable transactions={state.spendings}/>
                 <Fab
                     color="secondary"

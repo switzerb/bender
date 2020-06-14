@@ -6,7 +6,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
@@ -34,6 +33,24 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2)
     }
 }));
+
+function roundTo(n, digits) {
+    let negative = false;
+    if (digits === undefined) {
+        digits = 0;
+    }
+    if (n < 0) {
+        negative = true;
+        n = n * -1;
+    }
+    const mult = Math.pow(10, digits);
+    n = parseFloat((n * mult).toFixed(11));
+    n = (Math.round(n) / mult).toFixed(2);
+    if (negative) {
+        n = (n * -1).toFixed(2);
+    }
+    return n;
+}
 
 function NumberFormatCustom(props) {
     const {inputRef, onChange, ...other} = props;
@@ -65,10 +82,11 @@ const TransactionAdd = ({open, onClose}) => {
     const [type, setType] = useState("in")
     const [buckets, setBuckets] = React.useState([])
     const [bucket, setBucket] = React.useState(null)
-    const [amount, setAmount] = useState('')
+    const [inflow, setInflow] = useState(0)
+    const [outflow, setOutflow] = useState(0)
 
     useEffect(() => {
-        if(bucketsCollection) {
+        if (bucketsCollection) {
             const unsubscribe = bucketsCollection
                 .onSnapshot(({docs}) => {
                     const fromDB = docs.map(doc => {
@@ -82,11 +100,11 @@ const TransactionAdd = ({open, onClose}) => {
                 })
             return () => unsubscribe()
         }
-    }, [])
+    }, [bucketsCollection])
 
     const handleChangeType = (event, newType) => {
         setType(newType)
-        if(type === "in") {
+        if (type === "in") {
             setBucket('')
         }
     }
@@ -95,12 +113,19 @@ const TransactionAdd = ({open, onClose}) => {
         event.preventDefault()
         if (!description.trim().length) return
 
-        spendingsCollection.add({
+        // TODO: Form validation
+
+        let newTransaction = {
             description,
-            amount,
+            outflow: roundTo(outflow),
+            inflow: roundTo(inflow),
             timestamp: new Date(),
-            bucketRef: bucket, //we need to automatically create a bucket
-        })
+        }
+        if(bucket) {
+            newTransaction.bucketRef = bucket
+        }
+
+        spendingsCollection.add(newTransaction)
     }
 
     return (
@@ -124,7 +149,7 @@ const TransactionAdd = ({open, onClose}) => {
                     <TextField
                         margin="normal"
                         autoFocus
-                        placeholder="Describe what you bought"
+                        placeholder={type === "out" ? "Describe what you bought" : "How did you earn money?"}
                         id="description"
                         label="Description"
                         value={description}
@@ -132,33 +157,50 @@ const TransactionAdd = ({open, onClose}) => {
                         fullWidth
                         variant="outlined"
                     />
-                    <TextField
-                        margin="normal"
-                        placeholder="How much?"
-                        id="amount"
-                        label="Amount"
-                        value={amount}
-                        onChange={e => setAmount(e.target.value)}
-                        fullWidth
-                        variant="outlined"
-                        InputProps={{
-                            inputComponent: NumberFormatCustom,
-                        }}
-                    />
-                    {type === "out" ?
-                        <FormControl
-                        margin="normal"
-                            className={classes.form}
-                            variant="outlined"
-                        >
-                            <Select
+                    {
+                        type === 'in' ?
+                            <TextField
+                                margin="normal"
+                                placeholder="How much?"
+                                id="inflow"
+                                label="Earned"
+                                value={inflow}
+                                onChange={e => setInflow(parseFloat(e.target.value))}
                                 fullWidth
-                                value={bucket}
-                                onChange={(e) => setBucket(e.target.value)}
-                            >
-                                {buckets.map(bucket => <MenuItem value={bucket.id}>{bucket.name}</MenuItem>)}
-                            </Select></FormControl>
-                        : null}
+                                variant="outlined"
+                                InputProps={{
+                                    inputComponent: NumberFormatCustom,
+                                }}
+                            />
+                            :
+                            <>
+                                <TextField
+                                    margin="normal"
+                                    placeholder="How much?"
+                                    id="amount"
+                                    label="Spent"
+                                    value={outflow}
+                                    onChange={e => setOutflow(parseFloat(e.target.value))}
+                                    fullWidth
+                                    variant="outlined"
+                                    InputProps={{
+                                        inputComponent: NumberFormatCustom,
+                                    }}
+                                />
+                                <FormControl
+                                    margin="normal"
+                                    className={classes.form}
+                                    variant="outlined"
+                                >
+                                    <Select
+                                        fullWidth
+                                        value={bucket}
+                                        onChange={(e) => setBucket(e.target.value)}
+                                    >
+                                        {buckets.map(bucket => <MenuItem value={bucket.id}>{bucket.name}</MenuItem>)}
+                                    </Select></FormControl>
+                            </>
+                    }
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose} color="secondary">

@@ -11,7 +11,6 @@ import {Container} from '@material-ui/core'
 import AppHeader from './components/AppHeader'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import {makeStyles} from "@material-ui/core/styles";
-import userEvent from "@testing-library/user-event";
 
 // TODO : Logging
 // TODO: typescript
