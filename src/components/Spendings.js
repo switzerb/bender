@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core'
 import {Add} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/core/styles'
-import AddTransaction from './TransactionAdd'
+import TransactionAdd from './TransactionAdd'
 import TransactionsTable from "./TransactionsTable";
 import {DataContext} from "../providers/DataProvider";
 
@@ -94,7 +94,7 @@ const Spendings = props => {
                     <Add/>
                 </Fab>
             </Paper>
-            <AddTransaction open={open} onClose={handleClose}/>
+            <TransactionAdd open={open} onClose={handleClose}/>
         </div>
     )
 }
