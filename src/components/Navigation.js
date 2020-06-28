@@ -27,7 +27,6 @@ export default function Navigation(props) {
                 <Tab label="Dashboard" component={Link} to="/" value="/"/>
                 <Tab label="Spending" component={Link} to="spending" value="/spending"/>
                 <Tab label="Savings" component={Link} to="savings" value="/savings"/>
-                <Tab label="Should I Buy It?" component={Link} to="budget" value="/budget"/>
             </Tabs>
         </Paper>
     );

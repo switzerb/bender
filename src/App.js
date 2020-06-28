@@ -12,7 +12,8 @@ import AppHeader from './components/AppHeader'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import {makeStyles} from "@material-ui/core/styles";
 
-// TODO : Logging
+// TODO: Date Math
+// TODO: Logging
 // TODO: typescript
 // TODO: linting
 // TODO: prettier

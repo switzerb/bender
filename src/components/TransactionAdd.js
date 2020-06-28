@@ -3,6 +3,7 @@ import {
     Button,
     TextField,
     FormControl,
+    InputLabel,
     Dialog,
     DialogActions,
     DialogContent,
@@ -20,7 +21,6 @@ import {DataContext} from "../providers/DataProvider";
 
 // TODO: Validation on amount
 // TODO: helpers on forms
-// TODO: toggle for earn or spend
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,7 +49,7 @@ function roundTo(n, digits) {
     if (negative) {
         n = (n * -1).toFixed(2);
     }
-    return n;
+    return parseFloat(n);
 }
 
 function NumberFormatCustom(props) {
@@ -122,10 +122,10 @@ const TransactionAdd = ({open, onClose}) => {
             timestamp: new Date(),
         }
         if(bucket) {
-            newTransaction.bucketRef = bucket
+            newTransaction.bucketRef = bucketsCollection.doc(bucket)
         }
-
         spendingsCollection.add(newTransaction)
+        onClose()
     }
 
     return (
@@ -192,6 +192,7 @@ const TransactionAdd = ({open, onClose}) => {
                                     className={classes.form}
                                     variant="outlined"
                                 >
+                                    <InputLabel id="demo-simple-select-label">Bucket</InputLabel>
                                     <Select
                                         fullWidth
                                         value={bucket}

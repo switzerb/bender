@@ -26,7 +26,7 @@ const FutureMoney = ({savings, spending}) => {
         <Paper className={classes.paper}>
         <Typography variant="h4">Future Money</Typography>
             <p>You earn $10 every week, $5 to save, $5 to spend.</p>
-            <Typography variant="h6">How much will I have in...?</Typography>
+            <Typography variant="h6">{`How much will I have in...${weeks} week${weeks !== 1 ? 's' : ''}?`}</Typography>
             <Slider
                 onChange={handleChange}
                 defaultValue={1}
