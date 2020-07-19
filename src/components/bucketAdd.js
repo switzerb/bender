@@ -9,6 +9,8 @@ import {
 } from "@material-ui/core";
 import {DataContext} from "../providers/DataProvider";
 import {makeStyles} from "@material-ui/core/styles";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import {roundTo} from "../utils/money";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,21 +21,45 @@ const useStyles = makeStyles((theme) => ({
     },
     select: {
         padding: theme.spacing(2)
+    },
+    btn: {
+        margin: theme.spacing(1)
     }
 }));
 
 const BucketAdd = ({open, onClose}) => {
     const classes = useStyles();
     const [name, setName] = useState('')
-    const [budgeted, setBudgeted] = useState(0)
+    const [err_name, setErrName] = useState(false)
+    const [err_budgeted, setErrBudgeted] = useState(false)
+    const [budgeted, setBudgeted] = useState('')
     const {bucketsCollection} = useContext(DataContext)
 
+    const invalidName = (name) => {
+        if(!name.trim().length) {
+            setErrName(true)
+            return true
+        }
+        setErrName(false)
+        return false
+    }
+
+    const invalidBudget = (budgeted) => {
+        if (isNaN(budgeted)) {
+            setErrBudgeted(true)
+            return true
+        }
+        setErrBudgeted(false)
+        return false
+    }
+
     const onBucketAdd = () => {
-        if (!name.trim().length) return
-        // TODO: Form validation
+        if (invalidName(name)) return
+        if (invalidBudget(budgeted)) return
+
         let newBucket = {
             name,
-            budgeted,
+            budgeted: roundTo(budgeted),
         }
         bucketsCollection.add(newBucket)
         onClose()
@@ -41,7 +67,12 @@ const BucketAdd = ({open, onClose}) => {
 
     return (
         <>
-            <Dialog open={open} onClose={onClose} className={classes.root}>
+            <Dialog
+                fullWidth
+                open={open}
+                onClose={onClose}
+                className={classes.root}
+            >
                 <DialogTitle id="form-dialog-title">Add New Budgeting Bucket</DialogTitle>
                 <DialogContent>
                     <FormControl
@@ -50,29 +81,38 @@ const BucketAdd = ({open, onClose}) => {
                         variant="outlined"
                     >
                         <TextField
-                            helperText="Describe the bucket"
+                            label="Bucket Name"
+                            error={err_name}
+                            helperText={err_name ? "Name can't be empty" : "Describe the bucket"}
                             onChange={(e) => setName(e.target.value)}
                             fullWidth
                             variant="outlined"
                         />
                         <TextField
-                            helperText="budget every four weeks"
-                            onChange={(e) => setBudgeted(parseInt(e.target.value, 10))}
+                            label="How Much?"
+                            error={err_budgeted}
+                            helperText={err_budgeted ? 'Must be a number' : 'budget every four weeks'}
+                            onChange={(e) => setBudgeted(e.target.value)}
                             fullWidth
                             variant="outlined"
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                            }}
                         />
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => onBucketAdd()}>
-                            Save
-                        </Button>
-                        <Button
-                            variant="contained"
-                            onClick={onClose}
-                        >Cancel
-                        </Button>
                     </FormControl>
+                    <Button
+                        className={classes.btn}
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => onBucketAdd()}>
+                        Save
+                    </Button>
+                    <Button
+                        className={classes.btn}
+                        variant="contained"
+                        onClick={onClose}
+                    >Cancel
+                    </Button>
                 </DialogContent>
             </Dialog>
         </>
