@@ -1,10 +1,12 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {DataContext} from "../providers/DataProvider";
 import {
     Button,
     Paper
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
+import {latest_allowance_record} from "../utils/calculations";
+import { startOfWeek, endOfWeek, isWithinInterval } from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -14,35 +16,45 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const RecordAllowance = () => {
-    const classes = useStyles()
-    const {savingsCollection, spendingsCollection} = useContext(DataContext)
+const RecordAllowance = ({spendings}) => {
+    const classes = useStyles();
+    const {savingsCollection, spendingsCollection} = useContext(DataContext);
+
+    const alreadyRecorded = () => {
+        const start = startOfWeek(Date.now())
+        const end = endOfWeek(Date.now())
+        const latest = latest_allowance_record(spendings)
+        return isWithinInterval(latest, {start, end})
+    }
 
     const recordAllowance = () => {
-        // TODO: Make sure that they can only hit the button once a week!
-        savingsCollection.add({
-            description: "Weekly Allowance",
-            inflow: 5.00,
-            outflow: 0,
-            timestamp: new Date()
-        })
 
-        spendingsCollection.add({
-            description: "Weekly Allowance",
-            inflow: 5.00,
-            outflow: 0,
-            timestamp: new Date()
-        })
+        if(!alreadyRecorded()) {
+            // savingsCollection.add({
+            //     description: "Weekly Allowance",
+            //     inflow: 5.00,
+            //     outflow: 0,
+            //     timestamp: new Date()
+            // })
+            //
+            // spendingsCollection.add({
+            //     description: "Weekly Allowance",
+            //     inflow: 5.00,
+            //     outflow: 0,
+            //     timestamp: new Date()
+            // })
+        }
     }
 
     return (
         <Paper className={classes.paper}>
             <Button
+                disabled={alreadyRecorded()}
                 variant="contained"
                 color="secondary"
                 size="large"
                 onClick={recordAllowance}>
-                Record Weekly Allowance
+                {alreadyRecorded() ? "Allowance Recorded!" :  "Record Weekly Allowance"}
             </Button>
         </Paper>
     )

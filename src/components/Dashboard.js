@@ -76,7 +76,7 @@ const Dashboard = () => {
                 <Buckets/>
             </Grid>
             <Grid item xs={6}>
-                <RecordAllowance />
+                <RecordAllowance spendings={state.spendings}/>
                 <FutureMoney savings={get_savings(state.savings)} spending={get_spendings(state.spendings)}/>
             </Grid>
         </Grid>  )
