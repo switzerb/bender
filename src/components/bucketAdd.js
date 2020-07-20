@@ -23,7 +23,10 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2)
     },
     btn: {
-        margin: theme.spacing(1)
+        margin: theme.spacing(2, 1)
+    },
+    textfield: {
+        margin: theme.spacing(1, 0)
     }
 }));
 
@@ -76,11 +79,11 @@ const BucketAdd = ({open, onClose}) => {
                 <DialogTitle id="form-dialog-title">Add New Budgeting Bucket</DialogTitle>
                 <DialogContent>
                     <FormControl
-                        margin="normal"
                         className={classes.form}
                         variant="outlined"
                     >
                         <TextField
+                            className={classes.textfield}
                             label="Bucket Name"
                             error={err_name}
                             helperText={err_name ? "Name can't be empty" : "Describe the bucket"}
@@ -89,6 +92,7 @@ const BucketAdd = ({open, onClose}) => {
                             variant="outlined"
                         />
                         <TextField
+                            className={classes.textfield}
                             label="How Much?"
                             error={err_budgeted}
                             helperText={err_budgeted ? 'Must be a number' : 'budget every four weeks'}
