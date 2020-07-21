@@ -58,9 +58,9 @@ function NumberFormatCustom(props) {
     );
 }
 
-const TransactionAdd = ({open, onClose}) => {
+const TransactionAdd = ({open, onClose, account}) => {
     const classes = useStyles();
-    const {spendingsCollection, bucketsCollection} = useContext(DataContext)
+    const {spendingsCollection, savingsCollection, bucketsCollection} = useContext(DataContext)
     const [description, setDescription] = useState('')
     const [type, setType] = useState("in")
     const [buckets, setBuckets] = React.useState([])
@@ -107,7 +107,14 @@ const TransactionAdd = ({open, onClose}) => {
         if(bucket) {
             newTransaction.bucketRef = bucketsCollection.doc(bucket)
         }
-        spendingsCollection.add(newTransaction)
+
+        if(account === "spendings") {
+            spendingsCollection.add(newTransaction)
+        }
+
+        if(account === "savings") {
+            savingsCollection.add(newTransaction)
+        }
         onClose()
     }
 

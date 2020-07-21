@@ -19,17 +19,27 @@ const useStyles = makeStyles((theme) => ({
     inflow: {}
 }))
 
-const Transaction = ({ transaction, ...props }) => {
+const Transaction = ({ transaction, type }) => {
     const classes = useStyles();
-    const {spendingsCollection} = useContext(DataContext)
+    const {spendingsCollection, savingsCollection} = useContext(DataContext)
 
     const onTransactionDelete = id => {
-        spendingsCollection
-            .doc(id)
-            .delete()
-            .catch((e) =>{
-                console.log(e)
-            })
+        if(type === "spendings") {
+            spendingsCollection
+                .doc(id)
+                .delete()
+                .catch((e) =>{
+                    console.log(e)
+                })
+        }
+        if(type === "savings") {
+            savingsCollection
+                .doc(id)
+                .delete()
+                .catch((e) =>{
+                    console.log(e)
+                })
+        }
     }
 
     return (

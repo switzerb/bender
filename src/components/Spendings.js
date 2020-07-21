@@ -85,7 +85,7 @@ const Spendings = props => {
         <div className={classes.root}>
             <Paper className={classes.paper}>
                 <Typography variant="h4">Transactions</Typography>
-                <TransactionsTable transactions={state.spendings}/>
+                <TransactionsTable transactions={state.spendings} type="spendings"/>
                 <Fab
                     color="secondary"
                     aria-label="add"
@@ -94,7 +94,7 @@ const Spendings = props => {
                     <Add/>
                 </Fab>
             </Paper>
-            <TransactionAdd open={open} onClose={handleClose}/>
+            <TransactionAdd account="spendings" open={open} onClose={handleClose}/>
         </div>
     )
 }

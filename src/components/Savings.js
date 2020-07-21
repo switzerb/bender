@@ -1,11 +1,14 @@
 import React, {useEffect, useReducer, useContext} from 'react'
 import {
+    Fab,
     Paper,
     Typography
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
 import TransactionsTable from "./TransactionsTable";
 import {DataContext} from "../providers/DataProvider";
+import {Add} from "@material-ui/icons";
+import TransactionAdd from "./TransactionAdd";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,7 +38,16 @@ const reducer = (state, action) => {
 const Savings = props => {
     const classes = useStyles();
     const {savingsCollection} = useContext(DataContext)
+    const [open, setOpen] = React.useState(false);
     const [state, dispatch] = useReducer(reducer,{savings: []});
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     useEffect(() => {
         if(savingsCollection) {
@@ -64,7 +76,15 @@ const Savings = props => {
         <div className={classes.root}>
             <Paper className={classes.paper}>
                 <Typography variant="h4">Savings</Typography>
-                <TransactionsTable transactions={state.savings}/>
+                <TransactionsTable transactions={state.savings} type="savings" />
+                <Fab
+                    color="secondary"
+                    aria-label="add"
+                    className={classes.fab}
+                    onClick={handleClickOpen}>
+                    <Add/>
+                </Fab>
+                <TransactionAdd open={open} account="savings" onClose={handleClose}/>
             </Paper>
         </div>
     )

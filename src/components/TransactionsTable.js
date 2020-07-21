@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     },
 });
 
-const TransactionsTable = ({transactions, onDelete}) => {
+const TransactionsTable = ({transactions, type}) => {
     const classes = useStyles();
 
     return transactions.length ? (
@@ -33,7 +33,7 @@ const TransactionsTable = ({transactions, onDelete}) => {
                 </TableHead>
                 <TableBody>
                     {transactions.map((transaction) => (
-                        <Transaction key={transaction.id} transaction={transaction} onDelete={onDelete} />
+                        <Transaction key={transaction.id} transaction={transaction} type={type} />
                     ))}
                 </TableBody>
             </Table>
