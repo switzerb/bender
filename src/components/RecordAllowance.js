@@ -30,19 +30,19 @@ const RecordAllowance = ({spendings}) => {
     const recordAllowance = () => {
 
         if(!alreadyRecorded()) {
-            // savingsCollection.add({
-            //     description: "Weekly Allowance",
-            //     inflow: 5.00,
-            //     outflow: 0,
-            //     timestamp: new Date()
-            // })
-            //
-            // spendingsCollection.add({
-            //     description: "Weekly Allowance",
-            //     inflow: 5.00,
-            //     outflow: 0,
-            //     timestamp: new Date()
-            // })
+            savingsCollection.add({
+                description: "Weekly Allowance",
+                inflow: 5.00,
+                outflow: 0,
+                timestamp: new Date()
+            })
+
+            spendingsCollection.add({
+                description: "Weekly Allowance",
+                inflow: 5.00,
+                outflow: 0,
+                timestamp: new Date()
+            })
         }
     }
 
