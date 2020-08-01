@@ -69,6 +69,7 @@ const Spendings = props => {
                                 .then(bucket => {
                                 detail.bucket = bucket.data().name
                                 temp.push(detail)
+                                temp.sort( (a,b) => b.date - a.date)
                                 dispatch({type: 'getSpendings', payload: temp})
                             }).catch(err => console.error(err))
                         } else {
